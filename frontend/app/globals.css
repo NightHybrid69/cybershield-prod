@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-syne: 'Syne', sans-serif;
+  --font-dm-mono: 'DM Mono', monospace;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: var(--font-syne);
+  background: #f5f4f0;
+  color: #0a0a0a;
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-accent text-white px-6 py-3 rounded-xl font-semibold transition-all hover:bg-blue-700 hover:-translate-y-0.5 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:translate-y-0;
+  }
+  .btn-secondary {
+    @apply bg-transparent border-2 border-gray-200 text-gray-900 px-6 py-3 rounded-xl font-semibold transition-all hover:border-gray-900;
+  }
+  .input-field {
+    @apply w-full px-4 py-3 border border-gray-200 rounded-lg bg-[#f5f4f0] font-sans text-sm outline-none transition-all focus:border-accent focus:ring-2 focus:ring-accent/10;
+  }
+  .card {
+    @apply bg-white border border-gray-200 rounded-xl p-6;
+  }
+  .badge {
+    @apply inline-block px-3 py-1 rounded-full text-xs font-semibold font-mono;
+  }
+  .badge-new { @apply bg-accent-light text-accent; }
+  .badge-investigating { @apply bg-amber-100 text-amber-700; }
+  .badge-resolved { @apply bg-green-100 text-green-700; }
+  .badge-closed { @apply bg-gray-100 text-gray-600; }
+}
