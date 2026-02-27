@@ -1,4 +1,5 @@
 'use client';
+import { Suspense } from 'react';
 import { useState, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useDropzone } from 'react-dropzone';
@@ -11,7 +12,7 @@ interface FileWithPreview extends File {
   preview?: string;
 }
 
-export default function ComplaintPage() {
+function ComplaintForm() {
   const searchParams = useSearchParams();
   const preselectedType = searchParams.get('type') || '';
 
@@ -108,9 +109,8 @@ export default function ComplaintPage() {
         <p className="text-gray-500 text-sm mb-10">All fields marked <span className="text-danger">*</span> are required. Your data is encrypted and confidential.</p>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Personal Info */}
           <div className="card">
-            <h2 className="font-bold text-base mb-5 flex items-center gap-2">👤 Personal Information</h2>
+            <h2 className="font-bold text-base mb-5">👤 Personal Information</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
                 <label className="block text-xs font-semibold mb-1.5">Full Name <span className="text-danger">*</span></label>
@@ -134,7 +134,6 @@ export default function ComplaintPage() {
             </div>
           </div>
 
-          {/* Incident Details */}
           <div className="card">
             <h2 className="font-bold text-base mb-5">🔍 Incident Details</h2>
             <div className="space-y-5">
@@ -157,20 +156,18 @@ export default function ComplaintPage() {
               </div>
               <div>
                 <label className="block text-xs font-semibold mb-1.5">Incident Description <span className="text-danger">*</span></label>
-                <textarea className="input-field min-h-32" name="description" value={form.description} onChange={handleChange} placeholder="Describe what happened in detail. Include URLs, names, phone numbers, dates, or any relevant information..." />
+                <textarea className="input-field min-h-32" name="description" value={form.description} onChange={handleChange} placeholder="Describe what happened in detail..." />
               </div>
               <div>
-                <label className="block text-xs font-semibold mb-1.5">Evidence URLs or Links (optional)</label>
+                <label className="block text-xs font-semibold mb-1.5">Evidence URLs (optional)</label>
                 <input className="input-field" name="evidenceText" value={form.evidenceText} onChange={handleChange} placeholder="https://..." />
               </div>
             </div>
           </div>
 
-          {/* File Upload */}
           <div className="card">
             <h2 className="font-bold text-base mb-2">📎 Upload Evidence</h2>
             <p className="text-xs text-gray-500 mb-4">Images, PDFs, videos, or text files. Max 10MB each, up to 5 files.</p>
-
             <div
               {...getRootProps()}
               className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all ${isDragActive ? 'border-accent bg-accent-light' : 'border-gray-200 hover:border-accent hover:bg-accent-light/50'}`}
@@ -182,7 +179,6 @@ export default function ComplaintPage() {
                 : <><p className="font-semibold text-sm">Drag & drop files here</p><p className="text-xs text-gray-400 mt-1">or click to browse</p></>
               }
             </div>
-
             {files.length > 0 && (
               <div className="mt-4 space-y-2">
                 {files.map((f, i) => (
@@ -199,7 +195,6 @@ export default function ComplaintPage() {
             )}
           </div>
 
-          {/* Consent + Submit */}
           <div className="flex items-start gap-3">
             <input type="checkbox" id="consent" required className="mt-0.5 accent-accent" />
             <label htmlFor="consent" className="text-xs text-gray-500 leading-relaxed">
@@ -213,5 +208,13 @@ export default function ComplaintPage() {
         </form>
       </main>
     </>
+  );
+}
+
+export default function ComplaintPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <ComplaintForm />
+    </Suspense>
   );
 }

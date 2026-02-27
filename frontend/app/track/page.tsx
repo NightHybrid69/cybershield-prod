@@ -1,4 +1,5 @@
 'use client';
+import { Suspense } from 'react';
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Navbar from '@/components/ui/Navbar';
@@ -7,7 +8,7 @@ import { Search } from 'lucide-react';
 
 const STATUS_STEPS = ['New', 'Investigating', 'Resolved'];
 
-export default function TrackPage() {
+function TrackForm() {
   const searchParams = useSearchParams();
   const [id, setId] = useState(searchParams.get('id') || '');
   const [complaint, setComplaint] = useState<any>(null);
@@ -43,7 +44,6 @@ export default function TrackPage() {
         <h1 className="text-3xl font-extrabold tracking-tight mb-2">Check your status</h1>
         <p className="text-gray-500 text-sm mb-10">Enter your complaint ID to see the current status of your report.</p>
 
-        {/* Search */}
         <div className="flex gap-3 mb-10">
           <div className="relative flex-1">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -66,7 +66,6 @@ export default function TrackPage() {
 
         {complaint && (
           <div className="space-y-5">
-            {/* Status header */}
             <div className="card">
               <div className="flex items-start justify-between mb-4">
                 <div>
@@ -75,8 +74,6 @@ export default function TrackPage() {
                 </div>
                 <span className={getStatusBadgeClass(complaint.status)}>{complaint.status}</span>
               </div>
-
-              {/* Progress bar */}
               {complaint.status !== 'Closed' && (
                 <div className="mt-4">
                   <div className="flex justify-between text-xs text-gray-400 font-mono mb-2">
@@ -92,10 +89,9 @@ export default function TrackPage() {
               )}
             </div>
 
-            {/* Details */}
             <div className="card">
               <h2 className="font-bold text-sm mb-4">Complaint Details</h2>
-              <div className="space-y-3">
+              <div className="space-y-0">
                 {[
                   ['Crime Type', complaint.crimeType],
                   ['Subject', complaint.subject],
@@ -104,7 +100,7 @@ export default function TrackPage() {
                   ['Filed On', new Date(complaint.filedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })],
                   ['Last Updated', new Date(complaint.updatedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })],
                 ].map(([k, v]) => (
-                  <div key={k} className="grid grid-cols-[140px_1fr] gap-2 py-2 border-b border-gray-100 last:border-0">
+                  <div key={k} className="grid grid-cols-[140px_1fr] gap-2 py-2.5 border-b border-gray-100 last:border-0">
                     <span className="text-xs text-gray-400 font-mono">{k}</span>
                     <span className="text-sm">{v}</span>
                   </div>
@@ -112,7 +108,6 @@ export default function TrackPage() {
               </div>
             </div>
 
-            {/* Status guide */}
             <div className="bg-accent-light rounded-xl p-5">
               <p className="text-xs font-semibold text-accent mb-3 uppercase tracking-widest font-mono">What happens next?</p>
               <div className="space-y-2 text-xs text-gray-600">
@@ -126,5 +121,13 @@ export default function TrackPage() {
         )}
       </main>
     </>
+  );
+}
+
+export default function TrackPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <TrackForm />
+    </Suspense>
   );
 }
